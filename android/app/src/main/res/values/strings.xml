@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Armadio</string>
+    <string name="inventory_title">Wardrobe</string>
+    <plurals name="inventory_count">
+        <item quantity="one">%1$d garment</item>
+        <item quantity="other">%1$d garments</item>
+    </plurals>
+    <string name="inventory_f1_placeholder">Full inventory features arrive in F1.\nThe wardrobe database is already live: this counter is read from Room.</string>
+</resources>

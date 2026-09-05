@@ -1,0 +1,5 @@
+<resources>
+    <!-- Compose owns real theming; this only avoids a flash of the wrong
+         system theme before the first frame is composed. -->
+    <style name="Theme.Armadio" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>

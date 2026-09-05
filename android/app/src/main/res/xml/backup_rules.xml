@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- API < 31 path. Belt-and-suspenders: allowBackup=false already disables
+     Android Auto Backup entirely; these rules exist so that flipping
+     allowBackup by accident, or OEM transfer tooling, still leaks nothing.
+     See docs/adr/0001-backup-policy.md -->
+<full-backup-content>
+    <exclude domain="database" path="." />
+    <exclude domain="file" path="wardrobe" />
+    <exclude domain="file" path="datastore" />
+    <exclude domain="sharedpref" path="." />
+</full-backup-content>

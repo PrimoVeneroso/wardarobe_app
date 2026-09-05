@@ -1,0 +1,3 @@
+<resources>
+    <style name="Theme.Armadio" parent="android:Theme.Material.NoActionBar" />
+</resources>

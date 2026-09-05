@@ -1,0 +1,35 @@
+name: ci
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle (with cache)
+        uses: gradle/actions/setup-gradle@v4
+
+      # Order matters: assembleDebug processes the manifest, which auto-runs
+      # checkNoNetworkPermission (finalizedBy); the explicit invocation at the
+      # end makes the guardrail visible in the log and in the DoD command.
+      - name: Build, unit tests, zero-permission check
+        run: ./gradlew assembleDebug testDebugUnitTest checkNoNetworkPermission --stacktrace
+
+      - name: Upload Room schemas
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: room-schemas
+          path: app/schemas/

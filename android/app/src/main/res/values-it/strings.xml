@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Armadio</string>
+    <string name="inventory_title">Guardaroba</string>
+    <plurals name="inventory_count">
+        <item quantity="one">%1$d capo</item>
+        <item quantity="other">%1$d capi</item>
+    </plurals>
+    <string name="inventory_f1_placeholder">Le funzioni complete dell\'inventario arrivano in F1.\nIl database del guardaroba è già attivo: questo contatore è letto da Room.</string>
+</resources>
