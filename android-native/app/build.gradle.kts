@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -11,16 +13,33 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.armadio"
+        applicationId = "com.armadio.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = providers.gradleProperty("armadioVersionCode").orElse("2").get().toInt()
+        versionName = "0.2.0"
         vectorDrawables { useSupportLibrary = true }
     }
 
+    signingConfigs {
+        create("release") {
+            val signingFile = rootProject.file("../signing/release.properties")
+            val signing = Properties()
+            if (signingFile.exists()) signingFile.inputStream().use { signing.load(it) }
+            val keystore = System.getenv("ARMADIO_KEYSTORE_PATH") ?: signing.getProperty("storeFile")
+            if (keystore != null) {
+                storeFile = rootProject.file(keystore)
+                storePassword = System.getenv("ARMADIO_KEYSTORE_PASSWORD") ?: signing.getProperty("storePassword")
+                keyAlias = System.getenv("ARMADIO_KEY_ALIAS") ?: signing.getProperty("keyAlias")
+                keyPassword = System.getenv("ARMADIO_KEY_PASSWORD") ?: signing.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
+        debug { applicationIdSuffix = ".debug" }
         release {
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -39,7 +58,8 @@ android {
     // Exported Room schema JSON is committed (constraint #7):
     // app/schemas/com.armadio.core.database.AppDatabase/1.json
     sourceSets {
-        getByName("test") {
+        // Robolectric reads assets from the tested Android variant.
+        getByName("debug") {
             assets.srcDir("$projectDir/schemas")
         }
     }
@@ -54,6 +74,14 @@ android {
         resources {
             excludes += "/META-INF/AL2.0"
             excludes += "/META-INF/LGPL2.1"
+        }
+    }
+}
+
+tasks.matching { it.name == "validateSigningRelease" }.configureEach {
+    doFirst {
+        check(android.signingConfigs.getByName("release").storeFile?.isFile == true) {
+            "Release key missing. Run scripts/create-signing-key.sh or configure ARMADIO_KEYSTORE_PATH."
         }
     }
 }
@@ -94,6 +122,9 @@ dependencies {
     testImplementation(libs.room.testing)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)
+    testImplementation(platform(libs.androidx.compose.bom))
+    testImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
 
 // ---------------------------------------------------------------------------

@@ -6,4 +6,20 @@
         <item quantity="other">%1$d garments</item>
     </plurals>
     <string name="inventory_f1_placeholder">Full inventory features arrive in F1.\nThe wardrobe database is already live: this counter is read from Room.</string>
+    <string name="inventory_intro">Your clothes, in one place. Saved on this device.</string>
+    <string name="add_garment">Add garment</string>
+    <string name="edit_garment">Edit</string>
+    <string name="delete_garment">Delete</string>
+    <string name="search_garments">Search your wardrobe</string>
+    <string name="empty_inventory">Your wardrobe is empty. Add your first garment.</string>
+    <string name="no_results">No garments match your search.</string>
+    <string name="garment_name">Name (required)</string>
+    <string name="garment_brand">Brand</string>
+    <string name="garment_size">Size</string>
+    <string name="garment_notes">Notes</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_title">Delete garment?</string>
+    <string name="delete_message">Remove %1$s from your wardrobe?</string>
+    <string name="save_error">Could not save changes. Please try again.</string>
 </resources>

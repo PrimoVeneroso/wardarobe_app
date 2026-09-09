@@ -3,6 +3,7 @@ package com.armadio.core.database.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.armadio.core.database.entity.Garment
 import kotlinx.coroutines.flow.Flow
 
@@ -19,6 +20,12 @@ interface GarmentDao {
 
     @Insert
     suspend fun insert(garment: Garment): Long
+
+    @Update
+    suspend fun update(garment: Garment)
+
+    @Query("SELECT * FROM garments WHERE deletedAt IS NULL ORDER BY updatedAt DESC, id DESC")
+    fun activeGarments(): Flow<List<Garment>>
 
     @Query("UPDATE garments SET deletedAt = :timestamp, updatedAt = :timestamp WHERE id = :id")
     suspend fun softDelete(id: Long, timestamp: Long)

@@ -6,4 +6,20 @@
         <item quantity="other">%1$d capi</item>
     </plurals>
     <string name="inventory_f1_placeholder">Le funzioni complete dell\'inventario arrivano in F1.\nIl database del guardaroba è già attivo: questo contatore è letto da Room.</string>
+    <string name="inventory_intro">I tuoi vestiti, in un unico posto. Salvati su questo dispositivo.</string>
+    <string name="add_garment">Aggiungi capo</string>
+    <string name="edit_garment">Modifica</string>
+    <string name="delete_garment">Elimina</string>
+    <string name="search_garments">Cerca nel guardaroba</string>
+    <string name="empty_inventory">Il guardaroba è vuoto. Aggiungi il tuo primo capo.</string>
+    <string name="no_results">Nessun capo corrisponde alla ricerca.</string>
+    <string name="garment_name">Nome (obbligatorio)</string>
+    <string name="garment_brand">Marca</string>
+    <string name="garment_size">Taglia</string>
+    <string name="garment_notes">Note</string>
+    <string name="save">Salva</string>
+    <string name="cancel">Annulla</string>
+    <string name="delete_title">Eliminare il capo?</string>
+    <string name="delete_message">Vuoi rimuovere %1$s dal guardaroba?</string>
+    <string name="save_error">Salvataggio non riuscito. Riprova.</string>
 </resources>

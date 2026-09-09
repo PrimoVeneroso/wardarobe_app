@@ -55,6 +55,24 @@ class GarmentDaoTest {
     }
 
     @Test
+    fun edit_preservesIdentity_andActiveListExcludesDeletedRows() = runTest {
+        val original = garment("Wool coat")
+        val id = dao.insert(original)
+        val hidden = dao.insert(garment("Old shirt"))
+        dao.update(original.copy(id = id, name = "Blue coat", size = "M", updatedAt = 3_000L))
+        dao.softDelete(hidden, 4_000L)
+        val rows = dao.activeGarments().first()
+        assertEquals(1, rows.size)
+        assertEquals(id, rows.single().id)
+        assertEquals(original.uuid, rows.single().uuid)
+        assertEquals("Blue coat", rows.single().name)
+        assertEquals("M", rows.single().size)
+        assertEquals(3_000L, rows.single().updatedAt)
+        assertEquals(1, dao.search("blue").first().size)
+        assertEquals(0, dao.search("wool").first().size)
+    }
+
+    @Test
     fun insert_then_activeCount_isOne() = runTest {
         dao.insert(garment("Wool coat"))
         assertEquals(1, dao.activeCount().first())
