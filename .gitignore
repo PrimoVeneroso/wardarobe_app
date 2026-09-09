@@ -1,0 +1,11 @@
+node_modules/
+dist/
+android/
+.android-sdk/
+signing/
+*.jks
+*.keystore
+*.apk
+prompt.md
+*.jpg
+*.png
