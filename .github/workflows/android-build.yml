@@ -1,0 +1,67 @@
+name: Android Native Build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android-native
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build native app and run tests
+        run: bash ./gradlew assembleDebug testDebugUnitTest lintDebug checkNoNetworkPermission
+      - uses: actions/upload-artifact@v4
+        with:
+          name: armadio-debug-test-only
+          path: android-native/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+
+  release:
+    if: github.event_name != 'pull_request'
+    needs: verify
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android-native
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Restore persistent release key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ARMADIO_KEYSTORE_BASE64 }}
+        run: |
+          test -n "$KEYSTORE_BASE64" || { echo 'Configure ARMADIO signing secrets; see README.md'; exit 1; }
+          umask 077
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/armadio-release.jks"
+      - name: Build signed APK
+        env:
+          ARMADIO_KEYSTORE_PATH: ${{ runner.temp }}/armadio-release.jks
+          ARMADIO_KEYSTORE_PASSWORD: ${{ secrets.ARMADIO_KEYSTORE_PASSWORD }}
+          ARMADIO_KEY_ALIAS: ${{ secrets.ARMADIO_KEY_ALIAS }}
+          ARMADIO_KEY_PASSWORD: ${{ secrets.ARMADIO_KEY_PASSWORD }}
+        run: bash ./gradlew assembleRelease -ParmadioVersionCode=$((GITHUB_RUN_NUMBER + 100))
+      - name: Remove temporary key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/armadio-release.jks"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: armadio-release
+          path: android-native/app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
